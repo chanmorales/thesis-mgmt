@@ -3,6 +3,7 @@ package io.dev.mutex.thesisinfomgmt.service;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -18,10 +19,12 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,8 +34,13 @@ class AuthorServiceTest {
 
   @Mock
   private AuthorRepository authorRepository;
+
   @Mock
-  private Page<Author> authors;
+  private Author mockedAuthor1;
+  @Mock
+  private Author mockedAuthor2;
+  @Mock
+  private Page<Author> mockedPageOfAuthors;
 
   private AuthorService authorService;
 
@@ -41,133 +49,150 @@ class AuthorServiceTest {
     authorService = new AuthorServiceImpl(authorRepository);
   }
 
-  @Test
-  @DisplayName("Get authors without query successfully")
-  void testGetAuthorsWithoutQuery() {
-    Author author = Mockito.mock(Author.class);
-    when(authorRepository.findAll(any(PageRequest.class))).thenReturn(authors);
-    when(authors.get()).thenReturn(Stream.of(author));
+  @Nested
+  @DisplayName("Get authors tests")
+  class GetAuthorsTests {
 
-    assertDoesNotThrow(() -> {
-      PaginatedData<AuthorDTO> actualResult =
-          authorService.getAuthors(0, 10, null);
-      assertEquals(1, actualResult.getData().size());
-    });
+    @Test
+    @DisplayName("Should retrieve authors without query")
+    void shouldRetrieveAuthorsWithoutQuery() {
+      when(authorRepository.findAll(any(PageRequest.class)))
+          .thenReturn(mockedPageOfAuthors);
+      when(mockedPageOfAuthors.get())
+          .thenReturn(Stream.of(mockedAuthor1, mockedAuthor2));
+      when(mockedPageOfAuthors.getTotalElements()).thenReturn(2L);
+      when(mockedPageOfAuthors.hasNext()).thenReturn(false);
+
+      assertDoesNotThrow(() -> {
+        PaginatedData<AuthorDTO> actualResult =
+            authorService.getAuthors(0, 10, null);
+        assertEquals(0, actualResult.getPage());
+        assertEquals(10, actualResult.getPageSize());
+        assertEquals(2, actualResult.getTotal());
+        assertTrue(actualResult.isLastPage());
+        assertEquals(2, actualResult.getData().size());
+      });
+    }
+
+    @Test
+    @DisplayName("Should retrieve authors with query")
+    void shouldRetrieveAuthorsWithQuery() {
+      when(authorRepository
+          .findAllByLastNameContainsIgnoreCaseOrFirstNameContainsIgnoreCase(
+              anyString(), anyString(), any(PageRequest.class)))
+          .thenReturn(mockedPageOfAuthors);
+      when(mockedPageOfAuthors.get())
+          .thenReturn(Stream.of(mockedAuthor1, mockedAuthor2));
+      when(mockedPageOfAuthors.getTotalElements()).thenReturn(2L);
+      when(mockedPageOfAuthors.hasNext()).thenReturn(false);
+
+      assertDoesNotThrow(() -> {
+        PaginatedData<AuthorDTO> actualResult =
+            authorService.getAuthors(0, 10, "test");
+        assertEquals(0, actualResult.getPage());
+        assertEquals(10, actualResult.getPageSize());
+        assertEquals(2, actualResult.getTotal());
+        assertTrue(actualResult.isLastPage());
+        assertEquals(2, actualResult.getData().size());
+      });
+    }
+  }
+
+  @Nested
+  @DisplayName("Create author tests")
+  class CreateAuthorTests {
+
+    @ParameterizedTest
+    @DisplayName("Should fail when first name or last name is missing")
+    @CsvSource({
+        "First name is required.,,Doe",
+        "Last name is required.,John,"
+    })
+    void shouldFailWhenLastNameIsMissing(
+        String errorMessage, String firstName, String lastName
+    ) {
+      AuthorDTO inputAuthor = new AuthorDTO()
+          .withFirstName(firstName)
+          .withLastName(lastName);
+
+      ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
+          () -> authorService.createAuthor(inputAuthor));
+      assertEquals(errorMessage, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should successfully create author")
+    void shouldSuccessfullyCreateAuthor() {
+      AuthorDTO inputAuthor = new AuthorDTO()
+          .withFirstName("John")
+          .withLastName("Doe");
+      when(authorRepository.save(any(Author.class)))
+          .thenReturn(mockedAuthor1);
+
+      assertDoesNotThrow(() -> authorService.createAuthor(inputAuthor));
+    }
+  }
+
+  @Nested
+  @DisplayName("Get author tests")
+  class GetAuthorTests {
+
+    @Test
+    @DisplayName("Should fail when author does not exists")
+    void shouldFailWhenAuthorDoesNotExists() {
+      when(authorRepository.findById(11L)).thenReturn(Optional.empty());
+
+      ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
+          () -> authorService.getAuthor(11));
+      assertEquals("Author with id (11) not found.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should retrieve author successfully")
+    void shouldRetrieveAuthorSuccessfully() {
+      when(authorRepository.findById(11L)).thenReturn(Optional.of(mockedAuthor1));
+
+      assertDoesNotThrow(() -> authorService.getAuthor(11));
+    }
   }
 
   @Test
-  @DisplayName("Get authors with query successfully")
-  void testGetAuthorsWithQuery() {
-    Author author = Mockito.mock(Author.class);
-    when(authorRepository.findAllByLastNameContainsIgnoreCaseOrFirstNameContainsIgnoreCase(
-        anyString(), anyString(), any(PageRequest.class))).thenReturn(authors);
-    when(authors.get()).thenReturn(Stream.of(author));
-
-    assertDoesNotThrow(() -> {
-      PaginatedData<AuthorDTO> actualResult =
-          authorService.getAuthors(0, 10, "test");
-      assertEquals(1, actualResult.getData().size());
-    });
-  }
-
-  @Test
-  @DisplayName("Create author fails - missing last name")
-  void testCreateAuthorFailedMissingLastName() {
-    AuthorDTO createAuthor = new AuthorDTO()
-        .withFirstName("John");
-
-    ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
-        authorService.createAuthor(createAuthor));
-    assertEquals("Last name is required.", exception.getMessage());
-  }
-
-  @Test
-  @DisplayName("Create author fails - missing last name")
-  void testCreateAuthorFailedMissingFirstName() {
-    AuthorDTO createAuthor = new AuthorDTO()
-        .withLastName("Doe");
-
-    ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
-        authorService.createAuthor(createAuthor));
-    assertEquals("First name is required.", exception.getMessage());
-  }
-
-  @Test
-  @DisplayName("Create author successfully")
-  void testCreateAuthorSuccessfully() {
-    AuthorDTO createAuthor = new AuthorDTO()
-        .withLastName("Doe")
-        .withFirstName("John");
-    Author mockedAuthor = Mockito.mock(Author.class);
-    when(mockedAuthor.getLastName()).thenReturn("Doe");
-    when(mockedAuthor.getFirstName()).thenReturn("John");
-    when(authorRepository.save(any(Author.class))).thenReturn(mockedAuthor);
-
-    assertDoesNotThrow(() -> {
-      AuthorDTO actualResult = authorService.createAuthor(createAuthor);
-      assertEquals("Doe", actualResult.getLastName());
-      assertEquals("John", actualResult.getFirstName());
-    });
-  }
-
-  @Test
-  @DisplayName("Get author failed - not found")
-  void testGetAuthorNotFound() {
-    when(authorRepository.findById(11L)).thenReturn(Optional.empty());
-
-    ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
-        authorService.getAuthor(11));
-    assertEquals("Author with id (11) not found.", exception.getMessage());
-  }
-
-  @Test
-  @DisplayName("Get author successfully")
-  void testGetAuthorSuccessfully() {
-    Author mockedAuthor = Mockito.mock(Author.class);
-    when(mockedAuthor.getLastName()).thenReturn("Doe");
-    when(mockedAuthor.getFirstName()).thenReturn("John");
-    when(authorRepository.findById(11L)).thenReturn(Optional.of(mockedAuthor));
-
-    assertDoesNotThrow(() -> {
-      AuthorDTO actualResult = authorService.getAuthor(11);
-      assertEquals("Doe", actualResult.getLastName());
-      assertEquals("John", actualResult.getFirstName());
-    });
-  }
-
-  @Test
-  @DisplayName("Delete author successfully")
-  void testDeleteAuthorSuccessfully() {
+  @DisplayName("Should delete author successfully whether it exists or not")
+  void shouldDeleteAuthorSuccessfully() {
     doNothing().when(authorRepository).deleteById(11L);
 
     authorService.deleteAuthor(11);
     verify(authorRepository).deleteById(11L);
   }
 
-  @Test
-  @DisplayName("Update author failed - not found")
-  void testUpdateAuthorFailedNotFound() {
-    when(authorRepository.findById(11L)).thenReturn(Optional.empty());
+  @Nested
+  @DisplayName("Update author tests")
+  class UpdateAuthorTests {
 
-    AuthorDTO updatedAuthor = new AuthorDTO();
-    ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
-        authorService.updateAuthor(11, updatedAuthor));
-    assertEquals("Author with id (11) not found.", exception.getMessage());
-  }
+    @Test
+    @DisplayName("Should fail when author does not exists")
+    void shouldFailWhenAuthorDoesNotExists() {
+      when(authorRepository.findById(11L)).thenReturn(Optional.empty());
 
-  @Test
-  @DisplayName("Update author successfully")
-  void testUpdateAuthorSuccessfully() {
-    Author mockedAuthor = Mockito.mock(Author.class);
-    when(authorRepository.findById(11L)).thenReturn(Optional.of(mockedAuthor));
-    when(authorRepository.save(mockedAuthor)).thenReturn(mockedAuthor);
+      AuthorDTO inputAuthor = new AuthorDTO();
+      ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
+          authorService.updateAuthor(11, inputAuthor));
+      assertEquals("Author with id (11) not found.", exception.getMessage());
+    }
 
-    AuthorDTO updatedAuthor = new AuthorDTO()
-        .withLastName("Smith")
-        .withFirstName("John");
-    assertDoesNotThrow(() -> {
-      authorService.updateAuthor(11, updatedAuthor);
-      verify(authorRepository).save(mockedAuthor);
-    });
+    @Test
+    @DisplayName("Should successfully update author")
+    void shouldSuccessfullyUpdateAuthor() {
+      when(authorRepository.findById(11L)).thenReturn(Optional.of(mockedAuthor1));
+      when(authorRepository.save(mockedAuthor1)).thenReturn(mockedAuthor1);
+
+      AuthorDTO inputAuthor = new AuthorDTO()
+          .withLastName("Smith")
+          .withFirstName("John");
+      assertDoesNotThrow(() -> {
+        authorService.updateAuthor(11, inputAuthor);
+        verify(authorRepository).save(mockedAuthor1);
+      });
+    }
   }
 }

@@ -38,8 +38,9 @@ public class AuthorServiceImpl implements AuthorService {
     if (DataHelper.isNullOrEmpty(query)) {
       authors = authorRepository.findAll(pageRequest);
     } else {
-      authors = authorRepository.findAllByLastNameContainsIgnoreCaseOrFirstNameContainsIgnoreCase(
-          query, query, pageRequest);
+      authors = authorRepository
+          .findAllByLastNameContainsIgnoreCaseOrFirstNameContainsIgnoreCase(
+              query, query, pageRequest);
     }
 
     PaginatedData<AuthorDTO> result = new PaginatedData<>();
