@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
 import AppSider from "./AppSider";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import AppHeader from "./AppHeader";
+import Theses from "../pages/Theses";
+import Authors from "../pages/Authors";
+import Degrees from "../pages/Degrees";
+import Roles from "../pages/Roles";
 
 const { Content } = Layout;
 
@@ -42,7 +46,12 @@ const AppLayout: React.FC = () => {
               className="p-2.5"
               style={{ minHeight: "calc(100vh - 64px)" }}
             >
-              Content
+              <Routes>
+                <Route path="/" element={<Theses />} />
+                <Route path="/authors" element={<Authors />} />
+                <Route path="/degrees" element={<Degrees />} />
+                <Route path="/roles" element={<Roles />} />
+              </Routes>
             </Content>
           </Layout>
         </>
