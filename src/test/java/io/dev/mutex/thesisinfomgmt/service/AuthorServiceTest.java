@@ -11,9 +11,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
+import io.dev.mutex.thesisinfomgmt.dto.AuthorDTO;
 import io.dev.mutex.thesisinfomgmt.exception.ThesisInfoServiceException;
-import io.dev.mutex.thesisinfomgmt.model.dto.AuthorDTO;
-import io.dev.mutex.thesisinfomgmt.model.entity.Author;
+import io.dev.mutex.thesisinfomgmt.model.Author;
 import io.dev.mutex.thesisinfomgmt.repository.AuthorRepository;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -108,13 +108,12 @@ class AuthorServiceTest {
         "First name is required.,,Doe",
         "Last name is required.,John,"
     })
-    void shouldFailWhenLastNameIsMissing(
+    void shouldFailInvalidDetails(
         String errorMessage, String firstName, String lastName
     ) {
       AuthorDTO inputAuthor = new AuthorDTO()
           .withFirstName(firstName)
           .withLastName(lastName);
-
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> authorService.createAuthor(inputAuthor));
       assertEquals(errorMessage, exception.getMessage());

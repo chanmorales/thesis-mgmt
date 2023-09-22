@@ -1,4 +1,4 @@
-package io.dev.mutex.thesisinfomgmt.model.entity;
+package io.dev.mutex.thesisinfomgmt.model;
 
 import io.dev.mutex.thesisinfomgmt.util.DataHelper;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Author extends Auditable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @NotNull

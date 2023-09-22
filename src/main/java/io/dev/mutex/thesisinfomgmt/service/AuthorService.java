@@ -1,12 +1,12 @@
 package io.dev.mutex.thesisinfomgmt.service;
 
 import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
-import io.dev.mutex.thesisinfomgmt.model.dto.AuthorDTO;
+import io.dev.mutex.thesisinfomgmt.dto.AuthorDTO;
 
 public interface AuthorService {
 
   /**
-   * Retrieve authors
+   * Retrieves authors
    *
    * @param page     the page of the data to be retrieved
    * @param pageSize the number of items to be retrieved

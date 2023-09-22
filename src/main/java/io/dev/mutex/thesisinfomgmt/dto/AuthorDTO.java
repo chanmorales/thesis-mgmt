@@ -1,8 +1,8 @@
-package io.dev.mutex.thesisinfomgmt.model.dto;
+package io.dev.mutex.thesisinfomgmt.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import io.dev.mutex.thesisinfomgmt.model.entity.Author;
+import io.dev.mutex.thesisinfomgmt.model.Author;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;

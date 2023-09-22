@@ -4,8 +4,13 @@ import static io.dev.mutex.thesisinfomgmt.common.Constants.BASIC_NAME_FORMAT;
 import static io.dev.mutex.thesisinfomgmt.common.Constants.BASIC_NAME_FORMAT_NO_MI;
 import static io.dev.mutex.thesisinfomgmt.common.Constants.EMPTY_STRING;
 
+import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -48,5 +53,28 @@ public class DataHelper {
     return isNullOrEmpty(middleName) ?
         String.format(BASIC_NAME_FORMAT_NO_MI, lastName, firstName) :
         String.format(BASIC_NAME_FORMAT, lastName, firstName, middleName.charAt(0));
+  }
+
+  /**
+   * Converts page of entity to paginated dto data
+   *
+   * @param page        the page details
+   * @param pageRequest the page request details
+   * @param mapper      the data mapper
+   * @param <T>         the type of page data
+   * @param <R>         the type of the resulting paginated data
+   * @return paginated data
+   */
+  public static <T, R> PaginatedData<R> toPaginatedData(
+      Page<T> page, PageRequest pageRequest, Function<T, R> mapper
+  ) {
+    PaginatedData<R> result = new PaginatedData<>();
+    result.setPage(pageRequest.getPageNumber());
+    result.setPageSize(pageRequest.getPageSize());
+    result.setTotal(page.getTotalElements());
+    result.setLastPage(!page.hasNext());
+    result.setData(page.get().map(mapper).collect(Collectors.toList()));
+
+    return result;
   }
 }
