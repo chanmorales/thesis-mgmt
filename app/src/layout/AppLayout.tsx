@@ -26,7 +26,7 @@ const AppLayout: React.FC = () => {
     } else {
       setActiveMenuKey("theses");
     }
-  }, []);
+  }, [location.pathname, navigate]);
 
   return (
     <Layout>
