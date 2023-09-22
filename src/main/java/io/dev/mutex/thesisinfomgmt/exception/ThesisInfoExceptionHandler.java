@@ -1,6 +1,6 @@
 package io.dev.mutex.thesisinfomgmt.exception;
 
-import io.dev.mutex.thesisinfomgmt.model.dto.ExceptionDTO;
+import io.dev.mutex.thesisinfomgmt.dto.ExceptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

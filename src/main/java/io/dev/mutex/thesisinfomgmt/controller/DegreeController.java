@@ -1,8 +1,8 @@
 package io.dev.mutex.thesisinfomgmt.controller;
 
 import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
-import io.dev.mutex.thesisinfomgmt.dto.AuthorDTO;
-import io.dev.mutex.thesisinfomgmt.service.AuthorService;
+import io.dev.mutex.thesisinfomgmt.dto.DegreeDTO;
+import io.dev.mutex.thesisinfomgmt.service.DegreeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,20 +20,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/authors")
+@RequestMapping("/api/degrees")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
-public class AuthorController {
+public class DegreeController {
 
-  private final AuthorService authorService;
+  private final DegreeService degreeService;
 
   /**
-   * Retrieves paginated list of authors
+   * Retrieves paginated list of degrees
    *
    * @return 200 / OK if successful. Every other results indicates an error.
    */
   @GetMapping
-  public ResponseEntity<PaginatedData<AuthorDTO>> getAuthors(
+  public ResponseEntity<PaginatedData<DegreeDTO>> getDegrees(
       @Parameter(name = "page", description = "Page of the data to be retrieved.")
       @RequestParam(name = "page", defaultValue = "0") int page,
       @Parameter(name = "pageSize", description = "Number of items to be retrieved.")
@@ -41,58 +41,58 @@ public class AuthorController {
       @Parameter(name = "query", description = "The query string.")
       @RequestParam(name = "query", defaultValue = "") String query
   ) {
-    return ResponseEntity.ok(authorService.getAuthors(page, pageSize, query));
+    return ResponseEntity.ok(degreeService.getDegrees(page, pageSize, query));
   }
 
   /**
-   * Creates a new author
+   * Creates a new degree
    *
    * @return 201 / CREATED if successful. Every other results indicates an error.
    */
   @PostMapping
-  public ResponseEntity<AuthorDTO> createAuthor(
-      @Parameter(name = "author", description = "The author details to be created.")
-      @RequestBody AuthorDTO author
+  public ResponseEntity<DegreeDTO> createDegree(
+      @Parameter(name = "degree", description = "The degree details to be created.")
+      @RequestBody DegreeDTO degree
   ) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(authorService.createAuthor(author));
+    return ResponseEntity.status(HttpStatus.CREATED).body(degreeService.createDegree(degree));
   }
 
   /**
-   * Retrieves an author
+   * Retrieves a degree
    *
    * @return 200 / OK if successful. Every other results indicates an error.
    */
   @GetMapping("/{id}")
-  public ResponseEntity<AuthorDTO> getAuthor(
-      @Parameter(name = "id", description = "The id of the author to be retrieved.")
+  public ResponseEntity<DegreeDTO> getDegree(
+      @Parameter(name = "id", description = "The id of the degree to be retrieved.")
       @PathVariable long id
   ) {
-    return ResponseEntity.ok(authorService.getAuthor(id));
+    return ResponseEntity.ok(degreeService.getDegree(id));
   }
 
   /**
-   * Updates an author
+   * Updates a degree
    */
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateAuthor(
+  public void updateDegree(
       @Parameter(name = "id", description = "The id of the author to be updated.")
       @PathVariable long id,
       @Parameter(name = "author", description = "The updated author details.")
-      @RequestBody AuthorDTO author
+      @RequestBody DegreeDTO degree
   ) {
-    authorService.updateAuthor(id, author);
+    degreeService.updateDegree(id, degree);
   }
 
   /**
-   * Deletes an author
+   * Deletes a degree
    */
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteAuthor(
+  public void deleteDegree(
       @Parameter(name = "id", description = "The id of the author to be deleted.")
       @PathVariable long id
   ) {
-    authorService.deleteAuthor(id);
+    degreeService.deleteDegree(id);
   }
 }

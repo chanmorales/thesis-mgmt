@@ -9,4 +9,5 @@ public class Errors {
   // Common Errors
   public static final String ENTITY_NOT_FOUND = "%s with %s (%s) not found.";
   public static final String PROPERTY_REQUIRED = "%s is required.";
+  public static final String PROPERTY_SHOULD_BE_UNIQUE = "%s with %s: %s already exists.";
 }

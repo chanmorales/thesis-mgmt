@@ -1,4 +1,4 @@
-package io.dev.mutex.thesisinfomgmt.model.dto;
+package io.dev.mutex.thesisinfomgmt.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

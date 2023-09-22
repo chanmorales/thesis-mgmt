@@ -1,4 +1,4 @@
-package io.dev.mutex.thesisinfomgmt.model.entity;
+package io.dev.mutex.thesisinfomgmt.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;

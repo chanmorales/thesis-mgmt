@@ -1,7 +1,9 @@
 package io.dev.mutex.thesisinfomgmt.util;
 
-import io.dev.mutex.thesisinfomgmt.model.dto.AuthorDTO;
-import io.dev.mutex.thesisinfomgmt.model.entity.Author;
+import io.dev.mutex.thesisinfomgmt.dto.AuthorDTO;
+import io.dev.mutex.thesisinfomgmt.dto.DegreeDTO;
+import io.dev.mutex.thesisinfomgmt.model.Author;
+import io.dev.mutex.thesisinfomgmt.model.Degree;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,5 +23,19 @@ public class ModelMapper {
     author.setMiddleName(authorDTO.getMiddleName());
 
     return author;
+  }
+
+  /**
+   * Maps a degree dto to a degree entity
+   *
+   * @param degreeDTO the degree dto to be mapped
+   * @return degree entity
+   */
+  public static Degree map(DegreeDTO degreeDTO) {
+    Degree degree = new Degree();
+    degree.setCode(degreeDTO.getCode());
+    degree.setName(degreeDTO.getName());
+
+    return degree;
   }
 }

@@ -1,6 +1,6 @@
 package io.dev.mutex.thesisinfomgmt.repository;
 
-import io.dev.mutex.thesisinfomgmt.model.entity.Author;
+import io.dev.mutex.thesisinfomgmt.model.Author;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

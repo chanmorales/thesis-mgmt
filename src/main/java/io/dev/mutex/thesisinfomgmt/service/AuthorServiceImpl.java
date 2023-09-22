@@ -1,18 +1,19 @@
 package io.dev.mutex.thesisinfomgmt.service;
 
+import static io.dev.mutex.thesisinfomgmt.common.Constants.ATTRIBUTE_ID;
+import static io.dev.mutex.thesisinfomgmt.common.Constants.ENTITY_AUTHOR;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.ENTITY_NOT_FOUND;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.PROPERTY_REQUIRED;
 
 import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
+import io.dev.mutex.thesisinfomgmt.dto.AuthorDTO;
 import io.dev.mutex.thesisinfomgmt.exception.ThesisInfoServiceException;
-import io.dev.mutex.thesisinfomgmt.model.dto.AuthorDTO;
-import io.dev.mutex.thesisinfomgmt.model.entity.Author;
+import io.dev.mutex.thesisinfomgmt.model.Author;
 import io.dev.mutex.thesisinfomgmt.repository.AuthorRepository;
 import io.dev.mutex.thesisinfomgmt.util.DataHelper;
 import io.dev.mutex.thesisinfomgmt.util.ModelMapper;
 import io.dev.mutex.thesisinfomgmt.util.PaginationHelper;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
     // Construct the page request
     PageRequest pageRequest = PaginationHelper.of(page, pageSize);
 
-    // Check if there's a query string
+    // Retrieve data based on the query string
     Page<Author> authors;
     if (DataHelper.isNullOrEmpty(query)) {
       authors = authorRepository.findAll(pageRequest);
@@ -43,14 +44,7 @@ public class AuthorServiceImpl implements AuthorService {
               query, query, pageRequest);
     }
 
-    PaginatedData<AuthorDTO> result = new PaginatedData<>();
-    result.setPage(pageRequest.getPageNumber());
-    result.setPageSize(pageRequest.getPageSize());
-    result.setTotal(authors.getTotalElements());
-    result.setLastPage(!authors.hasNext());
-    result.setData(authors.get().map(AuthorDTO::new).collect(Collectors.toList()));
-
-    return result;
+    return DataHelper.toPaginatedData(authors, pageRequest, AuthorDTO::new);
   }
 
   /**
@@ -131,13 +125,13 @@ public class AuthorServiceImpl implements AuthorService {
   }
 
   /**
-   * Handles author not found
+   * Handles throwing of exception when author is not found
    *
    * @param id the id of the non-existing author
    */
   private void handleAuthorNotFound(long id) {
     throw new ThesisInfoServiceException(
-        String.format(ENTITY_NOT_FOUND, "Author", "id", id),
+        String.format(ENTITY_NOT_FOUND, ENTITY_AUTHOR, ATTRIBUTE_ID, id),
         HttpStatus.NOT_FOUND);
   }
 }
