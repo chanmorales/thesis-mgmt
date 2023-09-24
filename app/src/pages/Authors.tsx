@@ -4,7 +4,6 @@ import AuthorConfigDialog from "../components/authors/AuthorConfigDialog";
 import { Author } from "../types/Authors";
 import AuthorService from "../services/AuthorService";
 import NotificationHelper from "../helpers/NotificationHelper";
-import "../css/authors.css";
 
 const Authors: React.FC = () => {
   const [activeAuthor, setActiveAuthor] = useState<Author>();
@@ -25,7 +24,7 @@ const Authors: React.FC = () => {
   const onDeleteAuthor = async (authorId: number) => {
     try {
       await AuthorService.deleteAuthor(authorId);
-      NotificationHelper.success("Success", "Author successfully deleted.");
+      NotificationHelper.success("Author successfully deleted.");
     } finally {
       setRefetchData(true);
     }
@@ -41,6 +40,9 @@ const Authors: React.FC = () => {
         ? await AuthorService.createAuthor(author)
         : await AuthorService.updateAuthor(authorId, author);
     } finally {
+      NotificationHelper.success(
+        `Author successfully ${authorId === -1 ? "created" : "updated"}.`
+      );
       setIsAuthorConfigDialogOpen(false);
       setRefetchData(true);
     }

@@ -19,8 +19,7 @@ class AuthorService {
     };
     return await RequestHelper.doRemoteCallAsync(
       `${this.resourcePath}?${qs.stringify(queryParams)}`,
-      "get authors",
-      RequestMethod.GET
+      "get authors"
     );
   }
 

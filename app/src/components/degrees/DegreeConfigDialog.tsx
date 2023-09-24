@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Modal } from "antd";
-import { Author } from "../../types/Authors";
+import { Degree } from "../../types/Degrees";
 import { useForm } from "antd/es/form/Form";
+import { Form, Input, Modal } from "antd";
 
-interface AuthorConfigDialogProps {
+interface DegreeConfigDialogProps {
   open: boolean;
-  activeAuthor?: Author;
+  activeDegree?: Degree;
   onCancel: () => void;
-  onSubmit: (author: Author, authorId: number) => Promise<Author | void>;
+  onSubmit: (degree: Degree, degreeId: number) => Promise<Degree | void>;
 }
 
-const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
+const DegreeConfigDialog: React.FC<DegreeConfigDialogProps> = ({
   open,
-  activeAuthor,
+  activeDegree,
   onCancel,
   onSubmit,
 }) => {
@@ -28,11 +28,10 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
 
   useEffect(() => {
     form.setFieldsValue({
-      lastName: activeAuthor?.lastName ?? "",
-      firstName: activeAuthor?.firstName ?? "",
-      middleName: activeAuthor?.middleName ?? "",
+      code: activeDegree?.code ?? "",
+      name: activeDegree?.name ?? "",
     });
-  }, [form, activeAuthor]);
+  }, [form, activeDegree]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -47,19 +46,14 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
 
   const handleSubmit = async () => {
     const values = await form.validateFields();
-    await onSubmit(
-      {
-        ...values,
-      },
-      activeAuthor?.id ?? -1
-    );
+    await onSubmit({ ...values }, activeDegree?.id ?? -1);
   };
 
   return (
     <Modal
       open={open}
-      title={activeAuthor ? "Update Author" : "Create New Author"}
-      okText={activeAuthor ? "Update" : "Create"}
+      title={activeDegree ? "Update Degree" : "Create New Degree"}
+      okText={activeDegree ? "Update" : "Create"}
       onOk={handleSubmit}
       onCancel={onCancel}
       okButtonProps={{ disabled: !submittable }}
@@ -69,25 +63,22 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         form={form}
-        name="authorConfig"
+        name="degreeConfig"
       >
         <Form.Item
-          name="lastName"
-          label="Last Name"
+          name="code"
+          label="Code"
           required
-          rules={[{ required: true, message: "Last name is required." }]}
+          rules={[{ required: true, message: "Degree code is required." }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name="firstName"
-          label="First Name"
+          name="name"
+          label="Name"
           required
-          rules={[{ required: true, message: "First name is required." }]}
+          rules={[{ required: true, message: "Degree name is required." }]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item name="middleName" label="Middle Name">
           <Input />
         </Form.Item>
       </Form>
@@ -95,4 +86,4 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
   );
 };
 
-export default AuthorConfigDialog;
+export default DegreeConfigDialog;
