@@ -1,7 +1,7 @@
 import { notification } from "antd";
 
 export default {
-  success(message: string, description: string, duration = 3) {
+  success(description: string, message = "Success", duration = 3) {
     notification.success({
       message,
       description,

@@ -7,6 +7,7 @@ import Theses from "../pages/Theses";
 import Authors from "../pages/Authors";
 import Degrees from "../pages/Degrees";
 import Roles from "../pages/Roles";
+import "../css/common.css";
 
 const { Content } = Layout;
 
