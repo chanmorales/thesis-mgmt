@@ -16,6 +16,7 @@ public class Constants {
   // Entity names
   public static final String ENTITY_AUTHOR = "Author";
   public static final String ENTITY_DEGREE = "Degree";
+  public static final String ENTITY_ROLE = "Role";
 
   // Attributes
   public static final String ATTRIBUTE_ID = "id";
