@@ -8,4 +8,11 @@ export default {
       duration,
     });
   },
+  error(description: string, message = "Error", duration = 0) {
+    notification.error({
+      message,
+      description,
+      duration,
+    });
+  },
 };

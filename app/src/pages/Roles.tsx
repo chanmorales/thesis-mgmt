@@ -4,11 +4,14 @@ import { Role } from "../types/Roles";
 import RoleConfigDialog from "../components/features/roles/RoleConfigDialog";
 import RoleService from "../services/RoleService";
 import NotificationHelper from "../helpers/NotificationHelper";
+import CommonHelper from "../helpers/CommonHelper";
+import { RequestException } from "../types/Common";
 
 const Roles: React.FC = () => {
   const [activeRole, setActiveRole] = useState<Role>();
   const [isRoleConfigDialogOpen, setIsRoleConfigDialogOpen] = useState(false);
   const [refetchData, setRefetchData] = useState(false);
+  const [formError, setFormError] = useState<RequestException>();
 
   const onAddRole = () => {
     setActiveRole(undefined);
@@ -26,15 +29,28 @@ const Roles: React.FC = () => {
 
   const onSubmit = async (role: Role, roleId: number) => {
     try {
-      return roleId === -1
-        ? await RoleService.createRole(role)
-        : await RoleService.updateRole(roleId, role);
-    } finally {
+      setFormError(undefined);
+      const result =
+        roleId === -1
+          ? await RoleService.createRole(role)
+          : await RoleService.updateRole(roleId, role);
       NotificationHelper.success(
         `Author successfully ${roleId === -1 ? "created" : "updated"}.`
       );
       setIsRoleConfigDialogOpen(false);
       setRefetchData(true);
+      return result;
+    } catch (ex) {
+      if (typeof ex === "string" && CommonHelper.isJsonParseable(ex)) {
+        const errorDetails: RequestException = JSON.parse(ex);
+        if (errorDetails.field) {
+          setFormError(errorDetails);
+        } else {
+          NotificationHelper.error(errorDetails.message);
+        }
+      } else {
+        console.error(ex);
+      }
     }
   };
 
@@ -61,6 +77,7 @@ const Roles: React.FC = () => {
         activeRole={activeRole}
         onCancel={onCancel}
         onSubmit={onSubmit}
+        formError={formError}
       />
     </div>
   );

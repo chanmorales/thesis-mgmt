@@ -1,6 +1,5 @@
 package io.dev.mutex.thesisinfomgmt.service;
 
-import static io.dev.mutex.thesisinfomgmt.common.Constants.ATTRIBUTE_ID;
 import static io.dev.mutex.thesisinfomgmt.common.Constants.ENTITY_AUTHOR;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.ENTITY_NOT_FOUND;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.PROPERTY_REQUIRED;
@@ -69,7 +68,8 @@ public class AuthorServiceImpl implements AuthorService {
     // Check if the author to be retrieved exists
     Optional<Author> author = authorRepository.findById(id);
     if (author.isEmpty()) {
-      handleAuthorNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_AUTHOR),
+          HttpStatus.NOT_FOUND);
     }
 
     return new AuthorDTO(author.get());
@@ -91,7 +91,8 @@ public class AuthorServiceImpl implements AuthorService {
     // Check if author to be updated exists
     Optional<Author> updateAuthor = authorRepository.findById(id);
     if (updateAuthor.isEmpty()) {
-      handleAuthorNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_AUTHOR),
+          HttpStatus.NOT_FOUND);
     }
 
     // Validate the updated author details
@@ -122,16 +123,5 @@ public class AuthorServiceImpl implements AuthorService {
       throw new ThesisInfoServiceException(
           String.format(PROPERTY_REQUIRED, "First name"), "firstName", HttpStatus.BAD_REQUEST);
     }
-  }
-
-  /**
-   * Handles throwing of exception when author is not found
-   *
-   * @param id the id of the non-existing author
-   */
-  private void handleAuthorNotFound(long id) {
-    throw new ThesisInfoServiceException(
-        String.format(ENTITY_NOT_FOUND, ENTITY_AUTHOR, ATTRIBUTE_ID, id),
-        HttpStatus.NOT_FOUND);
   }
 }

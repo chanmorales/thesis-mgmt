@@ -4,6 +4,8 @@ import AuthorConfigDialog from "../components/features/authors/AuthorConfigDialo
 import { Author } from "../types/Authors";
 import AuthorService from "../services/AuthorService";
 import NotificationHelper from "../helpers/NotificationHelper";
+import CommonHelper from "../helpers/CommonHelper";
+import { RequestException } from "../types/Common";
 
 const Authors: React.FC = () => {
   const [activeAuthor, setActiveAuthor] = useState<Author>();
@@ -36,15 +38,23 @@ const Authors: React.FC = () => {
 
   const onSubmit = async (author: Author, authorId: number) => {
     try {
-      return authorId === -1
-        ? await AuthorService.createAuthor(author)
-        : await AuthorService.updateAuthor(authorId, author);
-    } finally {
+      const result =
+        authorId === -1
+          ? await AuthorService.createAuthor(author)
+          : await AuthorService.updateAuthor(authorId, author);
       NotificationHelper.success(
         `Author successfully ${authorId === -1 ? "created" : "updated"}.`
       );
       setIsAuthorConfigDialogOpen(false);
       setRefetchData(true);
+      return result;
+    } catch (ex) {
+      if (typeof ex === "string" && CommonHelper.isJsonParseable(ex)) {
+        const errorDetails: RequestException = JSON.parse(ex);
+        NotificationHelper.error(errorDetails.message);
+      } else {
+        console.error(ex);
+      }
     }
   };
 

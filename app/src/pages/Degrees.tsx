@@ -4,12 +4,15 @@ import { Degree } from "../types/Degrees";
 import NotificationHelper from "../helpers/NotificationHelper";
 import DegreeService from "../services/DegreeService";
 import DegreeConfigDialog from "../components/features/degrees/DegreeConfigDialog";
+import CommonHelper from "../helpers/CommonHelper";
+import { RequestException } from "../types/Common";
 
 const Degrees: React.FC = () => {
   const [activeDegree, setActiveDegree] = useState<Degree>();
   const [isDegreeConfigDialogOpen, setIsDegreeConfigDialogOpen] =
     useState(false);
   const [refetchData, setRefetchData] = useState(false);
+  const [formError, setFormError] = useState<RequestException>();
 
   const onAddDegree = () => {
     setActiveDegree(undefined);
@@ -36,15 +39,28 @@ const Degrees: React.FC = () => {
 
   const onSubmit = async (degree: Degree, degreeId: number) => {
     try {
-      return degreeId === -1
-        ? await DegreeService.createDegree(degree)
-        : await DegreeService.updateDegree(degreeId, degree);
-    } finally {
+      setFormError(undefined);
+      const result =
+        degreeId === -1
+          ? await DegreeService.createDegree(degree)
+          : await DegreeService.updateDegree(degreeId, degree);
       NotificationHelper.success(
         `Degree successfully ${degreeId === -1 ? "created" : "updated"}.`
       );
       setIsDegreeConfigDialogOpen(false);
       setRefetchData(true);
+      return result;
+    } catch (ex) {
+      if (typeof ex === "string" && CommonHelper.isJsonParseable(ex)) {
+        const errorDetails: RequestException = JSON.parse(ex);
+        if (errorDetails.field) {
+          setFormError(errorDetails);
+        } else {
+          NotificationHelper.error(errorDetails.message);
+        }
+      } else {
+        console.error(ex);
+      }
     }
   };
 
@@ -62,6 +78,7 @@ const Degrees: React.FC = () => {
         activeDegree={activeDegree}
         onCancel={onCancel}
         onSubmit={onSubmit}
+        formError={formError}
       />
     </div>
   );

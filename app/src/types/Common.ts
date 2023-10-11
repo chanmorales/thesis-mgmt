@@ -5,3 +5,8 @@ export interface PaginatedData<T> {
   total: number;
   lastPage: boolean;
 }
+
+export interface RequestException {
+  message: string;
+  field?: string;
+}
