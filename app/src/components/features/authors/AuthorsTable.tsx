@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Table from "../common/Table";
-import AuthorService from "../../services/AuthorService";
-import { Author } from "../../types/Authors";
+import Table from "../../common/Table";
+import AuthorService from "../../../services/AuthorService";
+import { Author } from "../../../types/Authors";
 import { ColumnsType } from "antd/es/table";
 import { Button, Input, Popconfirm, Space, TablePaginationConfig } from "antd";
 import {
@@ -10,7 +10,7 @@ import {
   PlusCircleFilled,
   SearchOutlined,
 } from "@ant-design/icons";
-import { DEFAULT_PAGE_SIZE } from "../../common/constants";
+import { DEFAULT_PAGE_SIZE } from "../../../common/constants";
 
 interface AuthorsTableProps {
   refetchData: boolean;
@@ -150,8 +150,6 @@ const AuthorsTable: React.FC<AuthorsTableProps> = ({
         loading={isFetching}
         columns={columns}
         dataSource={authors}
-        rowKey="id"
-        scroll={{ y: 480 }}
         pagination={pagination}
         onChange={onTableChange}
       />
