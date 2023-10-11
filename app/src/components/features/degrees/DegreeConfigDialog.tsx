@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Degree } from "../../../types/Degrees";
 import { useForm } from "antd/es/form/Form";
 import { Form, Input, Modal } from "antd";
+import { RequestException } from "../../../types/Common";
 
 interface DegreeConfigDialogProps {
   open: boolean;
   activeDegree?: Degree;
   onCancel: () => void;
   onSubmit: (degree: Degree, degreeId: number) => Promise<Degree | void>;
+  formError?: RequestException;
 }
 
 const DegreeConfigDialog: React.FC<DegreeConfigDialogProps> = ({
@@ -15,6 +17,7 @@ const DegreeConfigDialog: React.FC<DegreeConfigDialogProps> = ({
   activeDegree,
   onCancel,
   onSubmit,
+  formError,
 }) => {
   const [submittable, setSubmittable] = useState(false);
   const [form] = useForm();
@@ -43,6 +46,17 @@ const DegreeConfigDialog: React.FC<DegreeConfigDialogProps> = ({
       }
     );
   }, [form, values]);
+
+  useEffect(() => {
+    if (formError && formError.field) {
+      form.setFields([
+        {
+          name: formError.field,
+          errors: [formError.message],
+        },
+      ]);
+    }
+  }, [formError, form]);
 
   const handleSubmit = async () => {
     const values = await form.validateFields();

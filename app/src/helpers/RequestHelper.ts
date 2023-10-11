@@ -54,7 +54,7 @@ export default {
       if ([400, 401, 403, 404].includes(err.status)) {
         throw await err.text();
       } else if (err) {
-        throw new Error(err);
+        console.error(err);
       }
     }
   },

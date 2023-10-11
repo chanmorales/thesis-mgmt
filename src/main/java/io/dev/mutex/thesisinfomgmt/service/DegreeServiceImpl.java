@@ -1,6 +1,5 @@
 package io.dev.mutex.thesisinfomgmt.service;
 
-import static io.dev.mutex.thesisinfomgmt.common.Constants.ATTRIBUTE_ID;
 import static io.dev.mutex.thesisinfomgmt.common.Constants.ENTITY_DEGREE;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.ENTITY_NOT_FOUND;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.PROPERTY_REQUIRED;
@@ -71,7 +70,8 @@ public class DegreeServiceImpl implements DegreeService {
     // Check if the degree to be retrieved exists
     Optional<Degree> degree = degreeRepository.findById(id);
     if (degree.isEmpty()) {
-      handleDegreeNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_DEGREE),
+          HttpStatus.NOT_FOUND);
     }
 
     return new DegreeDTO(degree.get());
@@ -93,7 +93,8 @@ public class DegreeServiceImpl implements DegreeService {
     // Check if degree to be updated exists
     Optional<Degree> updateDegree = degreeRepository.findById(id);
     if (updateDegree.isEmpty()) {
-      handleDegreeNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_DEGREE),
+          HttpStatus.NOT_FOUND);
     }
 
     // Validate the updated degree details
@@ -124,7 +125,7 @@ public class DegreeServiceImpl implements DegreeService {
     if (duplicateCodeDegree.isPresent() &&
         duplicateCodeDegree.get().getId() != id) {
       throw new ThesisInfoServiceException(
-          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Degree", "code", degree.getCode()), "code",
+          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Degree code"), "code",
           HttpStatus.BAD_REQUEST);
     }
 
@@ -139,19 +140,8 @@ public class DegreeServiceImpl implements DegreeService {
     if (duplicateNameDegree.isPresent() &&
         duplicateNameDegree.get().getId() != id) {
       throw new ThesisInfoServiceException(
-          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Degree", "name", degree.getName()), "name",
+          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Degree name"), "name",
           HttpStatus.BAD_REQUEST);
     }
-  }
-
-  /**
-   * Handles throwing of exception when degree is not found
-   *
-   * @param id the id of the non-existing degree
-   */
-  private void handleDegreeNotFound(long id) {
-    throw new ThesisInfoServiceException(
-        String.format(ENTITY_NOT_FOUND, ENTITY_DEGREE, ATTRIBUTE_ID, id),
-        HttpStatus.NOT_FOUND);
   }
 }

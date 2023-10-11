@@ -1,6 +1,5 @@
 package io.dev.mutex.thesisinfomgmt.service;
 
-import static io.dev.mutex.thesisinfomgmt.common.Constants.ATTRIBUTE_ID;
 import static io.dev.mutex.thesisinfomgmt.common.Constants.ENTITY_ROLE;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.ENTITY_NOT_FOUND;
 import static io.dev.mutex.thesisinfomgmt.common.Errors.PROPERTY_REQUIRED;
@@ -69,7 +68,8 @@ public class RoleServiceImpl implements RoleService {
     // Check if the role to be retrieved exists
     Optional<Role> role = roleRepository.findById(id);
     if (role.isEmpty()) {
-      handleRoleNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_ROLE),
+          HttpStatus.NOT_FOUND);
     }
 
     return new RoleDTO(role.get());
@@ -91,7 +91,8 @@ public class RoleServiceImpl implements RoleService {
     // Check if the role to be updated exists
     Optional<Role> updateRole = roleRepository.findById(id);
     if (updateRole.isEmpty()) {
-      handleRoleNotFound(id);
+      throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_ROLE),
+          HttpStatus.NOT_FOUND);
     }
 
     // Validate the updated role details
@@ -120,19 +121,8 @@ public class RoleServiceImpl implements RoleService {
     if (duplicateNameRole.isPresent() &&
         duplicateNameRole.get().getId() != id) {
       throw new ThesisInfoServiceException(
-          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Role", "name", role.getName()), "name",
+          String.format(PROPERTY_SHOULD_BE_UNIQUE, "Role name"), "name",
           HttpStatus.BAD_REQUEST);
     }
-  }
-
-  /**
-   * Handles throwing of exception when role is not found
-   *
-   * @param id the id of the non-existing role
-   */
-  private void handleRoleNotFound(long id) {
-    throw new ThesisInfoServiceException(
-        String.format(ENTITY_NOT_FOUND, ENTITY_ROLE, ATTRIBUTE_ID, id),
-        HttpStatus.NOT_FOUND);
   }
 }

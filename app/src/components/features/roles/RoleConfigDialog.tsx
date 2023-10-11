@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Modal } from "antd";
 import { Role } from "../../../types/Roles";
 import { useForm } from "antd/es/form/Form";
+import { RequestException } from "../../../types/Common";
 
 interface RoleConfigDialogProps {
   open: boolean;
   activeRole?: Role;
   onCancel: () => void;
   onSubmit: (role: Role, roleId: number) => Promise<Role | void>;
+  formError?: RequestException;
 }
 
 const RoleConfigDialog: React.FC<RoleConfigDialogProps> = ({
@@ -15,6 +17,7 @@ const RoleConfigDialog: React.FC<RoleConfigDialogProps> = ({
   activeRole,
   onCancel,
   onSubmit,
+  formError,
 }) => {
   const [submittable, setSubmittable] = useState(false);
   const [form] = useForm();
@@ -42,6 +45,17 @@ const RoleConfigDialog: React.FC<RoleConfigDialogProps> = ({
       }
     );
   }, [form, values]);
+
+  useEffect(() => {
+    if (formError && formError.field) {
+      form.setFields([
+        {
+          name: formError.field,
+          errors: [formError.message],
+        },
+      ]);
+    }
+  }, [formError, form]);
 
   const handleSubmit = async () => {
     const values = await form.validateFields();
