@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Degree } from "../../types/Degrees";
+import { Degree } from "../../../types/Degrees";
 import { useForm } from "antd/es/form/Form";
 import { Form, Input, Modal } from "antd";
 
@@ -59,6 +59,7 @@ const DegreeConfigDialog: React.FC<DegreeConfigDialogProps> = ({
       okButtonProps={{ disabled: !submittable }}
     >
       <Form
+        className="mt-6"
         layout="horizontal"
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}

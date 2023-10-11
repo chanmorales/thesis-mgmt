@@ -1,56 +1,55 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Table from "../common/Table";
-import { ColumnsType } from "antd/es/table";
-import { Degree } from "../../types/Degrees";
 import { Button, Input, Popconfirm, Space, TablePaginationConfig } from "antd";
-import { DEFAULT_PAGE_SIZE } from "../../common/constants";
 import {
   DeleteFilled,
   EditFilled,
   PlusCircleFilled,
   SearchOutlined,
 } from "@ant-design/icons";
-import DegreeService from "../../services/DegreeService";
+import Table from "../../common/Table";
+import { Role } from "../../../types/Roles";
+import { ColumnsType } from "antd/es/table";
+import { DEFAULT_PAGE_SIZE } from "../../../common/constants";
+import RoleService from "../../../services/RoleService";
 
-interface DegreesTableProps {
+interface RolesTableProps {
   refetchData: boolean;
   setRefetchData: (value: boolean) => void;
-  onAddDegree: () => void;
-  onUpdateDegree: (degree: Degree) => void;
-  onDeleteDegree: (degreeId: number) => void;
+  onAddRole: () => void;
+  onUpdateRole: (role: Role) => void;
+  onDeleteRole: (roleId: number) => void;
 }
 
-const DegreesTable: React.FC<DegreesTableProps> = ({
+const RolesTable: React.FC<RolesTableProps> = ({
   refetchData,
   setRefetchData,
-  onAddDegree,
-  onUpdateDegree,
-  onDeleteDegree,
+  onAddRole,
+  onUpdateRole,
+  onDeleteRole,
 }) => {
-  const [degrees, setDegrees] = useState<Degree[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: DEFAULT_PAGE_SIZE,
-    showTotal: (total, range) =>
-      `${range[0]} - ${range[1]} of ${total} degrees`,
+    showTotal: (total, range) => `${range[0]} - ${range[1]} of ${total} roles`,
   });
 
-  const fetchDegrees = useCallback(async () => {
+  const fetchRoles = useCallback(async () => {
     if (pagination && refetchData) {
       setIsFetching(true);
-      const degrees = await DegreeService.getDegrees(
+      const roles = await RoleService.getRoles(
         (pagination.current ?? 1) - 1,
         pagination.pageSize ?? DEFAULT_PAGE_SIZE,
         searchText
       );
-      setDegrees(degrees.data);
+      setRoles(roles.data);
       setPagination({
         ...pagination,
-        current: degrees.page + 1,
-        pageSize: degrees.pageSize,
-        total: degrees.total,
+        current: roles.page + 1,
+        pageSize: roles.pageSize,
+        total: roles.total,
       });
       setIsFetching(false);
     }
@@ -62,10 +61,10 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
 
   useEffect(() => {
     if (refetchData) {
-      fetchDegrees().catch(console.error);
+      fetchRoles().catch(console.error);
       setRefetchData(false);
     }
-  }, [fetchDegrees, refetchData, setRefetchData]);
+  }, [fetchRoles, refetchData, setRefetchData]);
 
   const onTableSearch = (value: string) => {
     setSearchText(value);
@@ -86,13 +85,7 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
     setRefetchData(true);
   };
 
-  const columns: ColumnsType<Degree> = [
-    {
-      title: "Code",
-      key: "code",
-      dataIndex: "code",
-      width: "15%",
-    },
+  const columns: ColumnsType<Role> = [
     {
       title: "Name",
       key: "name",
@@ -101,22 +94,22 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
     {
       key: "action",
       width: "25%",
-      render: (_, degree) => (
+      render: (_, role) => (
         <Space>
           <Button
             type="link"
             icon={<EditFilled />}
-            onClick={() => onUpdateDegree(degree)}
+            onClick={() => onUpdateRole(role)}
           >
             Edit
           </Button>
           <Popconfirm
-            title="Delete Degree"
-            description="Are you sure you want to delete this degree?"
+            title="Delete Role"
+            description="Are you sure you want to delete this role?"
             icon={<DeleteFilled />}
             okText="Delete"
             okButtonProps={{ danger: true }}
-            onConfirm={() => onDeleteDegree(degree.id)}
+            onConfirm={() => onDeleteRole(role.id)}
           >
             <Button danger type="text" icon={<DeleteFilled />}>
               Delete
@@ -128,18 +121,18 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
   ];
 
   return (
-    <div id="degrees-table-container">
+    <div id="roles-table-container">
       <div
-        id="degrees-controls-container"
+        id="roles-controls-container"
         className="flex justify-between items-center"
       >
         <Button
           className="my-2"
           type="primary"
           icon={<PlusCircleFilled />}
-          onClick={onAddDegree}
+          onClick={onAddRole}
         >
-          Add Degree
+          Add Role
         </Button>
         <Input
           className="w-80"
@@ -151,9 +144,7 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
       <Table
         loading={isFetching}
         columns={columns}
-        dataSource={degrees}
-        rowKey="id"
-        scroll={{ y: 480 }}
+        dataSource={roles}
         pagination={pagination}
         onChange={onTableChange}
       />
@@ -161,4 +152,4 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
   );
 };
 
-export default DegreesTable;
+export default RolesTable;

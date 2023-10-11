@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Modal } from "antd";
-import { Author } from "../../types/Authors";
+import { Role } from "../../../types/Roles";
 import { useForm } from "antd/es/form/Form";
 
-interface AuthorConfigDialogProps {
+interface RoleConfigDialogProps {
   open: boolean;
-  activeAuthor?: Author;
+  activeRole?: Role;
   onCancel: () => void;
-  onSubmit: (author: Author, authorId: number) => Promise<Author | void>;
+  onSubmit: (role: Role, roleId: number) => Promise<Role | void>;
 }
 
-const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
+const RoleConfigDialog: React.FC<RoleConfigDialogProps> = ({
   open,
-  activeAuthor,
+  activeRole,
   onCancel,
   onSubmit,
 }) => {
@@ -28,11 +28,9 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
 
   useEffect(() => {
     form.setFieldsValue({
-      lastName: activeAuthor?.lastName ?? "",
-      firstName: activeAuthor?.firstName ?? "",
-      middleName: activeAuthor?.middleName ?? "",
+      name: activeRole?.name ?? "",
     });
-  }, [form, activeAuthor]);
+  }, [form, activeRole]);
 
   useEffect(() => {
     form.validateFields({ validateOnly: true }).then(
@@ -51,43 +49,33 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
       {
         ...values,
       },
-      activeAuthor?.id ?? -1
+      activeRole?.id ?? -1
     );
   };
 
   return (
     <Modal
       open={open}
-      title={activeAuthor ? "Update Author" : "Create New Author"}
-      okText={activeAuthor ? "Update" : "Create"}
+      title={activeRole ? "Update Role" : "Create New Role"}
+      okText={activeRole ? "Update" : "Create"}
       onOk={handleSubmit}
       onCancel={onCancel}
       okButtonProps={{ disabled: !submittable }}
     >
       <Form
+        className="mt-6"
         layout="horizontal"
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         form={form}
-        name="authorConfig"
+        name="roleConfig"
       >
         <Form.Item
-          name="lastName"
-          label="Last Name"
+          name="name"
+          label="Name"
           required
-          rules={[{ required: true, message: "Last name is required." }]}
+          rules={[{ required: true, message: "Role name is required." }]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="firstName"
-          label="First Name"
-          required
-          rules={[{ required: true, message: "First name is required." }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item name="middleName" label="Middle Name">
           <Input />
         </Form.Item>
       </Form>
@@ -95,4 +83,4 @@ const AuthorConfigDialog: React.FC<AuthorConfigDialogProps> = ({
   );
 };
 
-export default AuthorConfigDialog;
+export default RoleConfigDialog;

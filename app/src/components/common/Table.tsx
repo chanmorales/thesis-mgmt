@@ -7,6 +7,8 @@ const Table = <T extends object>({
 }: AntdTableProps<T>) => {
   return (
     <AntdTable
+      rowKey="id"
+      scroll={{ y: 480 }}
       className="h-full"
       pagination={{
         ...pagination,

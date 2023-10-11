@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AuthorsTable from "../components/authors/AuthorsTable";
-import AuthorConfigDialog from "../components/authors/AuthorConfigDialog";
+import AuthorsTable from "../components/features/authors/AuthorsTable";
+import AuthorConfigDialog from "../components/features/authors/AuthorConfigDialog";
 import { Author } from "../types/Authors";
 import AuthorService from "../services/AuthorService";
 import NotificationHelper from "../helpers/NotificationHelper";

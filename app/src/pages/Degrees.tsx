@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import DegreesTable from "../components/degrees/DegreesTable";
+import DegreesTable from "../components/features/degrees/DegreesTable";
 import { Degree } from "../types/Degrees";
 import NotificationHelper from "../helpers/NotificationHelper";
 import DegreeService from "../services/DegreeService";
-import DegreeConfigDialog from "../components/degrees/DegreeConfigDialog";
+import DegreeConfigDialog from "../components/features/degrees/DegreeConfigDialog";
 
 const Degrees: React.FC = () => {
   const [activeDegree, setActiveDegree] = useState<Degree>();
