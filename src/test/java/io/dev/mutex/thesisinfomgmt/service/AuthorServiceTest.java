@@ -143,7 +143,9 @@ class AuthorServiceTest {
 
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> authorService.getAuthor(11));
-      assertEquals("Author with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Author not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test
@@ -176,7 +178,9 @@ class AuthorServiceTest {
       AuthorDTO inputAuthor = new AuthorDTO();
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class, () ->
           authorService.updateAuthor(11, inputAuthor));
-      assertEquals("Author with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Author not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test

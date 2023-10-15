@@ -120,7 +120,7 @@ class RoleServiceTest {
           .withName("Adviser");
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> roleService.createRole(inputRole));
-      assertEquals("Role with name: Adviser already exists.", exception.getMessage());
+      assertEquals("Role name already exists.", exception.getMessage());
     }
 
     @Test
@@ -146,7 +146,9 @@ class RoleServiceTest {
 
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> roleService.getRole(11));
-      assertEquals("Role with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Role not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test
@@ -178,7 +180,9 @@ class RoleServiceTest {
       RoleDTO inputRole = new RoleDTO();
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> roleService.updateRole(11, inputRole));
-      assertEquals("Role with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Role not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test
