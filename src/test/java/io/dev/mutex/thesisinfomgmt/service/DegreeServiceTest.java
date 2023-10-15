@@ -129,7 +129,7 @@ class DegreeServiceTest {
           .withName("Computer Science");
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> degreeService.createDegree(inputDegree));
-      assertEquals("Degree with code: BSCS already exists.", exception.getMessage());
+      assertEquals("Degree code already exists.", exception.getMessage());
     }
 
     @Test
@@ -144,7 +144,7 @@ class DegreeServiceTest {
           .withName("Computer Science");
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> degreeService.createDegree(inputDegree));
-      assertEquals("Degree with name: Computer Science already exists.",
+      assertEquals("Degree name already exists.",
           exception.getMessage());
     }
 
@@ -172,7 +172,9 @@ class DegreeServiceTest {
 
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> degreeService.getDegree(11));
-      assertEquals("Degree with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Degree not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test
@@ -204,7 +206,9 @@ class DegreeServiceTest {
       DegreeDTO inputDegree = new DegreeDTO();
       ThesisInfoServiceException exception = assertThrows(ThesisInfoServiceException.class,
           () -> degreeService.updateDegree(11, inputDegree));
-      assertEquals("Degree with id (11) not found.", exception.getMessage());
+      assertEquals(
+          "Degree not found. Please check and ensure that the resource you are trying to access exists.",
+          exception.getMessage());
     }
 
     @Test
