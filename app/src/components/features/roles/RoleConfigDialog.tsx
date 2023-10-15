@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Modal } from "antd";
-import { Role } from "../../../types/Roles";
+import { Role } from "../../../types/Role";
 import { useForm } from "antd/es/form/Form";
 import { RequestException } from "../../../types/Common";
 

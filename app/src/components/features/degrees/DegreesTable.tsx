@@ -1,8 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Table from "../../common/Table";
 import { ColumnsType } from "antd/es/table";
-import { Degree } from "../../../types/Degrees";
-import { Button, Input, Popconfirm, Space, TablePaginationConfig } from "antd";
+import { Degree } from "../../../types/Degree";
+import {
+  Button,
+  Input,
+  Popconfirm,
+  Space,
+  TablePaginationConfig,
+  Tooltip,
+} from "antd";
 import { DEFAULT_PAGE_SIZE } from "../../../common/constants";
 import {
   DeleteFilled,
@@ -110,18 +117,26 @@ const DegreesTable: React.FC<DegreesTableProps> = ({
           >
             Edit
           </Button>
-          <Popconfirm
-            title="Delete Degree"
-            description="Are you sure you want to delete this degree?"
-            icon={<DeleteFilled />}
-            okText="Delete"
-            okButtonProps={{ danger: true }}
-            onConfirm={() => onDeleteDegree(degree.id)}
-          >
-            <Button danger type="text" icon={<DeleteFilled />}>
-              Delete
-            </Button>
-          </Popconfirm>
+          {degree.thesisCount > 0 ? (
+            <Tooltip title="Degree is being referenced by some thesis and cannot be deleted.">
+              <Button danger disabled type="text" icon={<DeleteFilled />}>
+                Delete
+              </Button>
+            </Tooltip>
+          ) : (
+            <Popconfirm
+              title="Delete Degree"
+              description="Are you sure you want to delete this degree?"
+              icon={<DeleteFilled />}
+              okText="Delete"
+              okButtonProps={{ danger: true }}
+              onConfirm={() => onDeleteDegree(degree.id)}
+            >
+              <Button danger type="text" icon={<DeleteFilled />}>
+                Delete
+              </Button>
+            </Popconfirm>
+          )}
         </Space>
       ),
     },

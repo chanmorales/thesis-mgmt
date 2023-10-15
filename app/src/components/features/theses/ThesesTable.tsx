@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Input, Popconfirm, Space, TablePaginationConfig } from "antd";
+import {
+  Button,
+  Input,
+  Popconfirm,
+  Space,
+  TablePaginationConfig,
+  Typography,
+} from "antd";
 import {
   DeleteFilled,
   EditFilled,
@@ -7,49 +14,51 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Table from "../../common/Table";
-import { Role } from "../../../types/Role";
+import { Thesis } from "../../../types/Thesis";
 import { ColumnsType } from "antd/es/table";
 import { DEFAULT_PAGE_SIZE } from "../../../common/constants";
-import RoleService from "../../../services/RoleService";
+import ThesisService from "../../../services/ThesisService";
 
-interface RolesTableProps {
+interface ThesesTableProps {
   refetchData: boolean;
   setRefetchData: (value: boolean) => void;
-  onAddRole: () => void;
-  onUpdateRole: (role: Role) => void;
-  onDeleteRole: (roleId: number) => void;
+  onAddThesis: () => void;
+  onUpdateThesis: (thesis: Thesis) => void;
+  onDeleteThesis: (thesisId: number) => void;
 }
 
-const RolesTable: React.FC<RolesTableProps> = ({
+const { Paragraph, Text } = Typography;
+
+const ThesesTable: React.FC<ThesesTableProps> = ({
   refetchData,
   setRefetchData,
-  onAddRole,
-  onUpdateRole,
-  onDeleteRole,
+  onAddThesis,
+  onUpdateThesis,
+  onDeleteThesis,
 }) => {
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [theses, setTheses] = useState<Thesis[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: DEFAULT_PAGE_SIZE,
-    showTotal: (total, range) => `${range[0]} - ${range[1]} of ${total} roles`,
+    showTotal: (total, range) => `${range[0]} - ${range[1]} of ${total} theses`,
   });
 
-  const fetchRoles = useCallback(async () => {
+  const fetchTheses = useCallback(async () => {
     if (pagination && refetchData) {
       setIsFetching(true);
-      const roles = await RoleService.getRoles(
+      const theses = await ThesisService.getTheses(
         (pagination.current ?? 1) - 1,
         pagination.pageSize ?? DEFAULT_PAGE_SIZE,
         searchText
       );
-      setRoles(roles.data);
+      setTheses(theses.data);
       setPagination({
         ...pagination,
-        current: roles.page + 1,
-        pageSize: roles.pageSize,
-        total: roles.total,
+        current: theses.page + 1,
+        pageSize: theses.pageSize,
+        total: theses.total,
       });
       setIsFetching(false);
     }
@@ -61,10 +70,10 @@ const RolesTable: React.FC<RolesTableProps> = ({
 
   useEffect(() => {
     if (refetchData) {
-      fetchRoles().catch(console.error);
+      fetchTheses().catch(console.error);
       setRefetchData(false);
     }
-  }, [fetchRoles, refetchData, setRefetchData]);
+  }, [fetchTheses, refetchData, setRefetchData]);
 
   const onTableSearch = (value: string) => {
     setSearchText(value);
@@ -85,31 +94,57 @@ const RolesTable: React.FC<RolesTableProps> = ({
     setRefetchData(true);
   };
 
-  const columns: ColumnsType<Role> = [
+  const columns: ColumnsType<Thesis> = [
     {
-      title: "Name",
-      key: "name",
-      dataIndex: "name",
+      title: "Title",
+      key: "title",
+      dataIndex: "title",
+    },
+    {
+      title: "Degree",
+      key: "degree",
+      width: "30%",
+      render: (_, thesis) => (
+        <Space>
+          <Paragraph>
+            <Text strong>{thesis.degree.code} </Text>
+            {thesis.degree.name}
+          </Paragraph>
+        </Space>
+      ),
+    },
+    {
+      title: "Date Submitted",
+      key: "dateSubmitted",
+      width: "15%",
+      render: (_, thesis) => (
+        <Space>{`${
+          thesis.dateSubmitted.year
+        }-${thesis.dateSubmitted.month.toLocaleString("en-US", {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        })}`}</Space>
+      ),
     },
     {
       key: "action",
-      width: "25%",
-      render: (_, role) => (
+      width: "20%",
+      render: (_, thesis) => (
         <Space>
           <Button
             type="link"
             icon={<EditFilled />}
-            onClick={() => onUpdateRole(role)}
+            onClick={() => onUpdateThesis(thesis)}
           >
             Edit
           </Button>
           <Popconfirm
-            title="Delete Role"
-            description="Are you sure you want to delete this role?"
+            title="Delete Thesis"
+            description="Are you sure you want to delete this thesis?"
             icon={<DeleteFilled />}
             okText="Delete"
             okButtonProps={{ danger: true }}
-            onConfirm={() => onDeleteRole(role.id)}
+            onConfirm={() => onDeleteThesis(thesis.id)}
           >
             <Button danger type="text" icon={<DeleteFilled />}>
               Delete
@@ -121,18 +156,18 @@ const RolesTable: React.FC<RolesTableProps> = ({
   ];
 
   return (
-    <div id="roles-table-container">
+    <div id="theses-table-container">
       <div
-        id="roles-controls-container"
+        id="theses-controls-container"
         className="flex justify-between items-center"
       >
         <Button
           className="my-2"
           type="primary"
           icon={<PlusCircleFilled />}
-          onClick={onAddRole}
+          onClick={onAddThesis}
         >
-          Add Role
+          Add Thesis
         </Button>
         <Input
           className="w-80"
@@ -144,7 +179,7 @@ const RolesTable: React.FC<RolesTableProps> = ({
       <Table
         loading={isFetching}
         columns={columns}
-        dataSource={roles}
+        dataSource={theses}
         pagination={pagination}
         onChange={onTableChange}
       />
@@ -152,4 +187,4 @@ const RolesTable: React.FC<RolesTableProps> = ({
   );
 };
 
-export default RolesTable;
+export default ThesesTable;

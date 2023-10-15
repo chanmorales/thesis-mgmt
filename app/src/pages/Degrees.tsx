@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DegreesTable from "../components/features/degrees/DegreesTable";
-import { Degree } from "../types/Degrees";
+import { Degree } from "../types/Degree";
 import NotificationHelper from "../helpers/NotificationHelper";
 import DegreeService from "../services/DegreeService";
 import DegreeConfigDialog from "../components/features/degrees/DegreeConfigDialog";
@@ -34,6 +34,7 @@ const Degrees: React.FC = () => {
   };
 
   const onCancel = () => {
+    setActiveDegree(undefined);
     setIsDegreeConfigDialogOpen(false);
   };
 

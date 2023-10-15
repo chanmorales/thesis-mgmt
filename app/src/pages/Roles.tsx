@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RolesTable from "../components/features/roles/RolesTable";
-import { Role } from "../types/Roles";
+import { Role } from "../types/Role";
 import RoleConfigDialog from "../components/features/roles/RoleConfigDialog";
 import RoleService from "../services/RoleService";
 import NotificationHelper from "../helpers/NotificationHelper";
@@ -23,7 +23,17 @@ const Roles: React.FC = () => {
     setIsRoleConfigDialogOpen(true);
   };
 
+  const onDeleteRole = async (roleId: number) => {
+    try {
+      await RoleService.deleteRole(roleId);
+      NotificationHelper.success("Role successfully deleted.");
+    } finally {
+      setRefetchData(true);
+    }
+  };
+
   const onCancel = () => {
+    setActiveRole(undefined);
     setIsRoleConfigDialogOpen(false);
   };
 
@@ -51,15 +61,6 @@ const Roles: React.FC = () => {
       } else {
         console.error(ex);
       }
-    }
-  };
-
-  const onDeleteRole = async (roleId: number) => {
-    try {
-      await RoleService.deleteRole(roleId);
-      NotificationHelper.success("Role successfully deleted.");
-    } finally {
-      setRefetchData(true);
     }
   };
 

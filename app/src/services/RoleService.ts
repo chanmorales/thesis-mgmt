@@ -1,5 +1,5 @@
 import { PaginatedData } from "../types/Common";
-import { Role } from "../types/Roles";
+import { Role } from "../types/Role";
 import RequestHelper from "../helpers/RequestHelper";
 import qs from "qs";
 import { RequestMethod } from "../common/constants";

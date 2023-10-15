@@ -12,12 +12,11 @@ public class Constants {
   // Formatters
   public static final String BASIC_NAME_FORMAT = "%s, %s %s.";
   public static final String BASIC_NAME_FORMAT_NO_MI = "%s, %s";
+  public static final String YEAR_MONTH_FORMAT = "%d-%02d";
 
   // Entity names
   public static final String ENTITY_AUTHOR = "Author";
   public static final String ENTITY_DEGREE = "Degree";
   public static final String ENTITY_ROLE = "Role";
-
-  // Attributes
-  public static final String ATTRIBUTE_ID = "id";
+  public static final String ENTITY_THESIS = "Thesis";
 }

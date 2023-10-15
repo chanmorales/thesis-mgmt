@@ -2,6 +2,8 @@ package io.dev.mutex.thesisinfomgmt.service;
 
 import io.dev.mutex.thesisinfomgmt.common.PaginatedData;
 import io.dev.mutex.thesisinfomgmt.dto.DegreeDTO;
+import io.dev.mutex.thesisinfomgmt.model.Degree;
+import java.util.Optional;
 
 public interface DegreeService {
 
@@ -30,6 +32,14 @@ public interface DegreeService {
    * @return retrieved degree
    */
   DegreeDTO getDegree(long id);
+
+  /**
+   * Retrieve degree entity by its id
+   *
+   * @param id the id ofthe degree to be retrieved
+   * @return retrieved degree
+   */
+  Optional<Degree> retrieveDegreeById(long id);
 
   /**
    * Deletes a degree

@@ -1,3 +1,5 @@
+import { YearMonth } from "../types/Thesis";
+
 export default {
   /**
    * Checks if data is JSON parseable
@@ -12,5 +14,13 @@ export default {
     } catch (e) {
       return false;
     }
+  },
+  /**
+   * Format's date submitted (year month) to YYYY/MM
+   *
+   * @param dateSubmitted the thesis date submitted
+   */
+  formatDateSubmitted(dateSubmitted: YearMonth): string {
+    return `${dateSubmitted.year}-${dateSubmitted.month}`;
   },
 };

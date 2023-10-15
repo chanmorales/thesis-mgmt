@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Table from "../../common/Table";
 import AuthorService from "../../../services/AuthorService";
-import { Author } from "../../../types/Authors";
+import { Author } from "../../../types/Author";
 import { ColumnsType } from "antd/es/table";
 import { Button, Input, Popconfirm, Space, TablePaginationConfig } from "antd";
 import {
