@@ -1,17 +1,17 @@
 import { PaginatedData } from "../types/Common";
-import { Degree } from "../types/Degree";
+import { Thesis } from "../types/Thesis";
 import RequestHelper from "../helpers/RequestHelper";
 import qs from "qs";
 import { RequestMethod } from "../common/constants";
 
-class DegreeService {
-  resourcePath = "degrees";
+class ThesisService {
+  resourcePath = "theses";
 
-  async getDegrees(
+  async getTheses(
     page: number,
     pageSize: number,
     query: string
-  ): Promise<PaginatedData<Degree>> {
+  ): Promise<PaginatedData<Thesis>> {
     const queryParams = {
       page: page,
       pageSize: pageSize,
@@ -19,35 +19,35 @@ class DegreeService {
     };
     return await RequestHelper.doRemoteCallAsync(
       `${this.resourcePath}?${qs.stringify(queryParams)}`,
-      "get degrees"
+      "get theses"
     );
   }
 
-  async createDegree(degree: Degree): Promise<Degree> {
+  async createThesis(thesis: Thesis): Promise<Thesis> {
     return await RequestHelper.doRemoteCallAsync(
       this.resourcePath,
-      "create degree",
+      "create thesis",
       RequestMethod.POST,
-      degree
+      thesis
     );
   }
 
-  async updateDegree(degreeId: number, degree: Degree): Promise<void> {
+  async updateThesis(thesisId: number, thesis: Thesis): Promise<void> {
     return await RequestHelper.doRemoteCallAsync(
-      `${this.resourcePath}/${degreeId}`,
-      "update degree",
+      `${this.resourcePath}/${thesisId}`,
+      "update thesis",
       RequestMethod.PUT,
-      degree
+      thesis
     );
   }
 
-  async deleteDegree(degreeId: number): Promise<void> {
+  async deleteThesis(thesisId: number): Promise<void> {
     return await RequestHelper.doRemoteCallAsync(
-      `${this.resourcePath}/${degreeId}`,
-      "delete degree",
+      `${this.resourcePath}/${thesisId}`,
+      "delete thesis",
       RequestMethod.DELETE
     );
   }
 }
 
-export default new DegreeService();
+export default new ThesisService();

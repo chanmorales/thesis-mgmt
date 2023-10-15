@@ -1,4 +1,4 @@
-import { Author } from "../types/Authors";
+import { Author } from "../types/Author";
 import RequestHelper from "../helpers/RequestHelper";
 import { PaginatedData } from "../types/Common";
 import { RequestMethod } from "../common/constants";

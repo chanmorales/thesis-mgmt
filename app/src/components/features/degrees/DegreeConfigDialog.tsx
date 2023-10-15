@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Degree } from "../../../types/Degrees";
+import { Degree } from "../../../types/Degree";
 import { useForm } from "antd/es/form/Form";
 import { Form, Input, Modal } from "antd";
 import { RequestException } from "../../../types/Common";

@@ -68,13 +68,22 @@ public class DegreeServiceImpl implements DegreeService {
   @Override
   public DegreeDTO getDegree(long id) {
     // Check if the degree to be retrieved exists
-    Optional<Degree> degree = degreeRepository.findById(id);
+    Optional<Degree> degree = retrieveDegreeById(id);
     if (degree.isEmpty()) {
       throw new ThesisInfoServiceException(String.format(ENTITY_NOT_FOUND, ENTITY_DEGREE),
           HttpStatus.NOT_FOUND);
     }
 
     return new DegreeDTO(degree.get());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Optional<Degree> retrieveDegreeById(long id) {
+    // Check if the degree to be retrieved exists
+    return degreeRepository.findById(id);
   }
 
   /**

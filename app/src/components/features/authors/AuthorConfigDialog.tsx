@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Modal } from "antd";
-import { Author } from "../../../types/Authors";
+import { Author } from "../../../types/Author";
 import { useForm } from "antd/es/form/Form";
 
 interface AuthorConfigDialogProps {

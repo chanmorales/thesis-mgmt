@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AuthorsTable from "../components/features/authors/AuthorsTable";
 import AuthorConfigDialog from "../components/features/authors/AuthorConfigDialog";
-import { Author } from "../types/Authors";
+import { Author } from "../types/Author";
 import AuthorService from "../services/AuthorService";
 import NotificationHelper from "../helpers/NotificationHelper";
 import CommonHelper from "../helpers/CommonHelper";
@@ -33,6 +33,7 @@ const Authors: React.FC = () => {
   };
 
   const onCancel = () => {
+    setActiveAuthor(undefined);
     setIsAuthorConfigDialogOpen(false);
   };
 

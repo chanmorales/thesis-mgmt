@@ -4,26 +4,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Formula;
 
 @Entity
 @Getter
 @Setter
-public class Degree {
+public class ThesisAuthorRole extends Auditable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotNull
-  private String code;
+  @ManyToOne
+  private Thesis thesis;
 
-  @NotNull
-  private String name;
+  @ManyToOne
+  private Author author;
 
-  @Formula("(SELECT COUNT(*) FROM thesis t WHERE t.degree_id = id)")
-  private int thesisCount;
+  @ManyToOne
+  private Role role;
 }

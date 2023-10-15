@@ -27,6 +27,9 @@ public class DegreeDTO {
   @XmlElement
   private String name;
 
+  @XmlElement
+  private int thesisCount;
+
   /**
    * Creates a new degree dto based on the provided degree entity
    *
@@ -36,5 +39,6 @@ public class DegreeDTO {
     this.id = degree.getId();
     this.code = degree.getCode();
     this.name = degree.getName();
+    this.thesisCount = degree.getThesisCount();
   }
 }
